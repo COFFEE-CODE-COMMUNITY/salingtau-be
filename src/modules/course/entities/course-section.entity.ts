@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne } from "typeorm"
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm"
 import { BaseEntity } from "../../../base/base.entity"
 import { Course } from "./course.entity"
+import { Lecture } from "./lecture.entity"
 import { AutoMap } from "@automapper/classes"
 
 @Entity({ name: "course_sections" })
@@ -15,4 +16,7 @@ export class CourseSection extends BaseEntity {
 
   @ManyToOne(() => Course, course => course.sections)
   public course!: Course
+
+  @OneToMany(() => Lecture, lecture => lecture.section)
+  public lectures!: Lecture[]
 }

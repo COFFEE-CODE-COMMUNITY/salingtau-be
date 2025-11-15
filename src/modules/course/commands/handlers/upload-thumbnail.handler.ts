@@ -13,12 +13,13 @@ import {
   ImageProcessingData,
   ImageProcessingType
 } from "../../../../queue/image-processing.consumer"
-import { PayloadTooLargeException, UnsupportedMediaTypeException } from "@nestjs/common"
+import { NotFoundException, PayloadTooLargeException, UnsupportedMediaTypeException } from "@nestjs/common"
 import { plainToInstance } from "class-transformer"
 import { CommonResponseDto } from "../../../../dto/common-response.dto"
 import { InjectQueue } from "@nestjs/bullmq"
 import { Queue } from "bullmq"
 import { FileStorage } from "../../../../storage/file-storage.abstract"
+import { CourseRepository } from "../../repositories/course.repository"
 
 @CommandHandler(UploadThumbnailCommand)
 export class UploadThumbnailHandler implements ICommandHandler<UploadThumbnailCommand> {
@@ -26,20 +27,31 @@ export class UploadThumbnailHandler implements ICommandHandler<UploadThumbnailCo
 
   public constructor(
     @InjectQueue(IMAGE_PROCESSING_QUEUE) private readonly thumbnailQueue: Queue<ImageProcessingData>,
-    private readonly fileStorage: FileStorage
+    private readonly fileStorage: FileStorage,
+    private readonly courseRepository: CourseRepository
   ) {}
 
-  public async execute(dto: UploadThumbnailCommand): Promise<void> {
+  public async execute(dto: UploadThumbnailCommand): Promise<CommonResponseDto> {
+    // Verify course exists and get courseId
+    const course = await this.courseRepository.findByIdOrSlug(dto.courseIdOrSlug)
+    if (!course) {
+      throw new NotFoundException(
+        plainToInstance(CommonResponseDto, {
+          message: `Course with id or slug '${dto.courseIdOrSlug}' not found`
+        })
+      )
+    }
+
     const abortController = new AbortController()
     const sizeValidator = new SizeLimitingValidator(this.THUMBNAIL_SIZE_LIMIT)
     const fileTypeValidator = new FileTypeValidator(ALLOWED_IMAGE_MIMETYPES as unknown as string[])
     const streamValidation = new StreamValidation(sizeValidator, fileTypeValidator)
 
     try {
-      dto.fileStream.pipe(streamValidation)
+      dto.req.pipe(streamValidation)
 
       const filePath = new VideoThumbnailPath({
-        videoId: dto.lectureId,
+        videoId: course.id,
         resolution: "original",
         extension: "bin"
       })
@@ -53,6 +65,10 @@ export class UploadThumbnailHandler implements ICommandHandler<UploadThumbnailCo
         abortController
       )
       await this.thumbnailQueue.add(ImageProcessingType.VIDEO_THUMBNAIL, { path: filePath.toString() })
+
+      return plainToInstance(CommonResponseDto, {
+        message: "Thumbnail uploaded successfully. Processing in background."
+      })
     } catch (error) {
       abortController.abort()
 
@@ -60,7 +76,7 @@ export class UploadThumbnailHandler implements ICommandHandler<UploadThumbnailCo
         if (error.getValidator() instanceof SizeLimitingValidator) {
           throw new PayloadTooLargeException(
             plainToInstance(CommonResponseDto, {
-              message: `Profile picture exceeds the maximum allowed size of ${this.THUMBNAIL_SIZE_LIMIT / 1048576}MB.`
+              message: `Thumbnail exceeds the maximum allowed size of ${this.THUMBNAIL_SIZE_LIMIT / 1048576}MB.`
             })
           )
         } else if (error.getValidator() instanceof FileTypeValidator) {
@@ -71,6 +87,7 @@ export class UploadThumbnailHandler implements ICommandHandler<UploadThumbnailCo
           )
         }
       }
+      throw error
     }
   }
 }

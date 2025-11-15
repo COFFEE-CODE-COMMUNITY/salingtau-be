@@ -45,6 +45,24 @@ export class GetCoursesHandler implements IQueryHandler<GetCoursesQuery> {
         break
     }
 
-    return this.pagination.paginate(offset, limit, { where, order, relations: { instructor: true, category: true } })
+    return this.pagination.paginate(offset, limit, {
+      where,
+      order,
+      relations: { instructor: true, category: true },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        language: true,
+        price: true,
+        thumbnail: true,
+        status: true,
+        averageRating: true,
+        totalReviews: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    })
   }
 }
