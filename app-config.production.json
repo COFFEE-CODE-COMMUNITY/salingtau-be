@@ -2,13 +2,13 @@
   "app": {
     "port": 8080,
     "domain": "salingtau.com",
-    "cdnUrl": "http://43.133.128.187/api/v1/files"
+    "cdnUrl": "https://api.salingtau.cthree.it.com/api/v1/files"
   },
   "client": {
     "web": {
-      "oauth2Redirect": "http://43.133.128.187/homepage",
-      "changePassword": "http://43.133.128.187/change-password",
-      "url": "http://43.133.128.187"
+      "oauth2Redirect": "https://salingtau.cthree.it.com/homepage",
+      "changePassword": "https://salingtau.cthree.it.com/change-password",
+      "url": "https://salingtau.cthree.it.com"
     }
   },
   "email": {
