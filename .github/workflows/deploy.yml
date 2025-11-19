@@ -85,15 +85,6 @@ jobs:
           sshpass -p '${{ secrets.VM_PASSWORD }}' scp -o StrictHostKeyChecking=no \
             -r nginx ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:~/salingtau-production/
 
-      - name: Create certbot directories on VM
-        run: |
-          sshpass -p '${{ secrets.VM_PASSWORD }}' ssh -o StrictHostKeyChecking=no \
-            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
-            cd ~/salingtau-production
-            mkdir -p certbot/conf certbot/www
-            echo "Certbot directories created"
-          EOF
-
       - name: Deploy application
         run: |
           sshpass -p '${{ secrets.VM_PASSWORD }}' ssh -o StrictHostKeyChecking=no \
@@ -139,32 +130,6 @@ jobs:
             echo "Frontend logs:"
             docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} logs --tail=20 frontend
           EOF
-
-      - name: Obtain SSL certificates
-        run: |
-          sshpass -p '${{ secrets.VM_PASSWORD }}' ssh -o StrictHostKeyChecking=no \
-            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'SSLEOF'
-            cd ~/salingtau-production
-
-            # Check if certificates already exist
-            if [ ! -f certbot/conf/live/salingtau.cthree.it.com/fullchain.pem ]; then
-              echo "Obtaining SSL certificates..."
-
-              docker compose -f docker-compose.production.yml run --rm certbot certonly --webroot \
-                -w /var/www/certbot \
-                -d salingtau.cthree.it.com \
-                -d api.salingtau.cthree.it.com \
-                --email ${{ secrets.SSL_EMAIL }} \
-                --agree-tos \
-                --no-eff-email
-
-              echo "Certificates obtained! Reloading nginx..."
-              docker compose -f docker-compose.production.yml exec nginx nginx -s reload
-              echo "SSL setup complete!"
-            else
-              echo "SSL certificates already exist, skipping..."
-            fi
-          SSLEOF
 
       - name: Cleanup old images
         run: |
