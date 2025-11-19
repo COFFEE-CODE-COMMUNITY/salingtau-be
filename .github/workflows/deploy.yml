@@ -85,6 +85,14 @@ jobs:
           sshpass -p '${{ secrets.VM_PASSWORD }}' scp -o StrictHostKeyChecking=no \
             -r nginx ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:~/salingtau-production/
 
+      - name: Create certbot directories on VM
+        run: |
+          sshpass -p '${{ secrets.VM_PASSWORD }}' ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+            mkdir -p ~/salingtau-production/certbot/www
+            mkdir -p ~/salingtau-production/certbot/conf
+          EOF
+
       - name: Deploy application
         run: |
           sshpass -p '${{ secrets.VM_PASSWORD }}' ssh -o StrictHostKeyChecking=no \
@@ -105,6 +113,32 @@ jobs:
 
             echo "Checking container status..."
             docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} ps
+          EOF
+
+      - name: Obtain SSL certificates (first time only)
+        continue-on-error: true
+        run: |
+          sshpass -p '${{ secrets.VM_PASSWORD }}' ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+            cd ~/salingtau-production
+
+            # Check if certificates already exist
+            if [ ! -d "./certbot/conf/live/salingtau.cthree.it.com" ]; then
+              echo "Obtaining SSL certificates for the first time..."
+              docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} run --rm certbot certonly \
+                --webroot \
+                --webroot-path=/var/www/certbot \
+                --email ${{ secrets.SSL_EMAIL }} \
+                --agree-tos \
+                --no-eff-email \
+                -d salingtau.cthree.it.com \
+                -d api.salingtau.cthree.it.com
+
+              echo "Reloading nginx to use new certificates..."
+              docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} exec nginx nginx -s reload
+            else
+              echo "SSL certificates already exist, skipping..."
+            fi
           EOF
 
       - name: Health check
@@ -138,14 +172,3 @@ jobs:
             echo "Cleaning up old Docker images..."
             docker image prune -af --filter "until=24h"
           EOF
-
-      - name: Send deployment notification
-        if: always()
-        run: |
-          if [ "${{ job.status }}" == "success" ]; then
-            echo "✅ Deployment successful!"
-            echo "Backend Image: ${{ env.BACKEND_IMAGE }}:latest"
-            echo "Frontend Image: ${{ env.FRONTEND_IMAGE }}:latest"
-          else
-            echo "❌ Deployment failed!"
-          fi
