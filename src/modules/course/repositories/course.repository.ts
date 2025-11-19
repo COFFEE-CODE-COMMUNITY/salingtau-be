@@ -50,9 +50,9 @@ export class CourseRepository extends BaseRepository<Course> {
       },
       order: {
         sections: {
-          displayOrder: 'ASC',
+          displayOrder: "ASC",
           lectures: {
-            displayOrder: 'ASC'
+            displayOrder: "ASC"
           }
         }
       }
