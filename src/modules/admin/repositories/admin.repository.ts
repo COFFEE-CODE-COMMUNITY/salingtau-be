@@ -26,6 +26,20 @@ export class AdminRepository extends BaseRepository<Course> {
       relations: {
         instructor: true,
         category: true
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        language: true,
+        price: true,
+        thumbnail: true,
+        status: true,
+        averageRating: true,
+        totalReviews: true,
+        createdAt: true,
+        updatedAt: true
       }
     })
   }
@@ -37,8 +51,21 @@ export class AdminRepository extends BaseRepository<Course> {
       },
       relations: {
         instructor: true,
-        category: true,
-        thumbnail: true
+        category: true
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        language: true,
+        price: true,
+        thumbnail: true,
+        status: true,
+        averageRating: true,
+        totalReviews: true,
+        createdAt: true,
+        updatedAt: true
       },
       order: {
         createdAt: "DESC"

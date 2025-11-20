@@ -24,7 +24,37 @@ export class CourseRepository extends BaseRepository<Course> {
       where,
       relations: {
         instructor: true,
-        category: true
+        category: true,
+        sections: {
+          lectures: {
+            article: true,
+            video: true,
+            file: true,
+            external: true
+          }
+        }
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        language: true,
+        price: true,
+        thumbnail: true,
+        status: true,
+        averageRating: true,
+        totalReviews: true,
+        createdAt: true,
+        updatedAt: true
+      },
+      order: {
+        sections: {
+          displayOrder: "ASC",
+          lectures: {
+            displayOrder: "ASC"
+          }
+        }
       }
     })
   }

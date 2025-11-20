@@ -168,7 +168,8 @@ export class ImageProcessingConsumer extends WorkerHost {
 
   private async processVideoThumbnail(path: string): Promise<void> {
     const originalFilePath = new VideoThumbnailPath(path)
-    const videoId = originalFilePath.getVideoId()
+    const videoId = originalFilePath.getVideoId() // Note: videoId here is actually courseId
+    this.logger.verbose(`Processing course thumbnail for courseId: ${videoId}`)
 
     // Fetch original file
     const [imageFileProperties, streamImage] = await Promise.all([
@@ -234,7 +235,12 @@ export class ImageProcessingConsumer extends WorkerHost {
 
     // Get existing course to check for old original thumbnail
     const course = await this.courseRepository.findById(videoId)
-    const existingOriginal = course?.thumbnail
+    if (!course) {
+      this.logger.error(`Course not found with id: ${videoId}`)
+      throw new Error(`Course not found with id: ${videoId}`)
+    }
+    const existingOriginal = course.thumbnail
+    this.logger.verbose(`Found course: ${course.id}, existing thumbnail: ${existingOriginal?.path}`)
 
     // Delete original file and upload new original image without metadata
     const newThumbnailPath = new VideoThumbnailPath({
@@ -263,6 +269,9 @@ export class ImageProcessingConsumer extends WorkerHost {
       height: imageMetadata.height
     })
 
-    await this.courseRepository.update(videoId, { thumbnail } as Course)
+    this.logger.verbose(`Saving thumbnail to database for courseId: ${videoId}, path: ${newThumbnailPath}`)
+    course.thumbnail = thumbnail
+    await this.courseRepository.save(course)
+    this.logger.verbose(`Successfully saved thumbnail for courseId: ${videoId}`)
   }
 }

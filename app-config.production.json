@@ -6,7 +6,7 @@
   },
   "client": {
     "web": {
-      "oauth2Redirect": "https://salingtau.cthree.it.com/homepage",
+      "oauth2Redirect": "https://salingtau.cthree.it.com/dashboard/student",
       "changePassword": "https://salingtau.cthree.it.com/change-password",
       "url": "https://salingtau.cthree.it.com",
       "domain": ".cthree.it.com"
