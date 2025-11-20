@@ -8,7 +8,8 @@
     "web": {
       "oauth2Redirect": "https://salingtau.cthree.it.com/homepage",
       "changePassword": "https://salingtau.cthree.it.com/change-password",
-      "url": "https://salingtau.cthree.it.com"
+      "url": "https://salingtau.cthree.it.com",
+      "domain": ".cthree.it.com"
     }
   },
   "email": {

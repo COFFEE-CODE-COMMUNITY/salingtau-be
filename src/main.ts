@@ -102,7 +102,7 @@ export class Main {
       )
       .addServer(
         `http://${config.get<string>("app.domain")}:${config.get<number>("app.port", 3000)}`,
-        config.get<NodeEnv>("app.nodeEnv") === NodeEnv.DEVELOPMENT ? "Development server" : "Production server"
+        config.get<NodeEnv>("NODE_ENV") === NodeEnv.DEVELOPMENT ? "Development server" : "Production server"
       )
       .build()
     const document = SwaggerModule.createDocument(app, swaggerConfig)

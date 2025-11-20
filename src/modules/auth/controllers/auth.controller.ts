@@ -233,19 +233,12 @@ export class AuthController {
   }
 
   private getSetCookieOptions(): CookieOptions {
-    // return {
-    //  httpOnly: true,
-    //   maxAge,
-    //   sameSite: "lax", // 'lax' supaya bisa kirim dari login form
-    //   secure: false,   // false untuk HTTP localhost
-    //   path: "/",       // cookie berlaku di semua endpoint
-    // }
     return {
       domain: this.config.get("client.web.domain", "localhost"),
       httpOnly: true,
       maxAge: REFRESH_TOKEN_EXPIRES_MS,
-      sameSite: this.config.get("app.nodeEnv") === NodeEnv.PRODUCTION ? "none" : "strict",
-      secure: this.config.get("app.nodeEnv") === NodeEnv.PRODUCTION,
+      sameSite: this.config.get("NODE_ENV") === NodeEnv.PRODUCTION ? "none" : "strict",
+      secure: this.config.get("NODE_ENV") === NodeEnv.PRODUCTION,
       path: "/"
     }
   }
