@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseEnumPipe, ParseIntPipe, Post, Put, Query, Req } from "@nestjs/common"
+import { Body, Controller, Get, Param, ParseEnumPipe, ParseIntPipe, Patch, Post, Put, Query, Req } from "@nestjs/common"
 import { CourseDto } from "../dto/course.dto"
 import { CommandBus, QueryBus } from "@nestjs/cqrs"
 import { CreateCourseCommand } from "../commands/create-course.command"
@@ -36,6 +36,7 @@ import { PutLectureContentCommand } from "../commands/put-lecture-content.comman
 import { LectureDto } from "../dto/lecture.dto"
 import { CreateLectureCommand } from "../commands/create-lecture.command"
 import { UploadThumbnailCommand } from "../commands/upload-thumbnail.command"
+import { GetCourseSectionsQuery } from "../queries/get-course-sections.query"
 
 @ApiTags("Courses")
 @Controller("courses")
@@ -157,6 +158,15 @@ export class CourseController {
     return this.commandBus.execute(new CreateCourseCommand(dto))
   }
 
+  @Patch(":courseIdOrSlug")
+  public async updateCourse(
+    @Param("courseIdOrSlug") courseIdOrSlug: string,
+    @Body() dto: CourseDto
+  ): Promise<CourseDto> {
+    // Implementation for updating a course goes here
+    return {} as CourseDto
+  }
+
   @Put(":courseIdOrSlug/thumbnail")
   public async uploadCourseThumbnail(
     @Param("courseIdOrSlug") courseIdOrSlug: string,
@@ -164,6 +174,17 @@ export class CourseController {
   ): Promise<CommonResponseDto> {
     req.setTimeout(0) // Disable timeout for large file uploads
     return this.commandBus.execute(new UploadThumbnailCommand(courseIdOrSlug, req))
+  }
+
+  @Get(":courseIdOrSlug/sections")
+  public async getCourseSections(
+    @Param("courseIdOrSlug") courseIdOrSlug: string,
+    @Query("offset", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    offset: number = 0,
+    @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    limit: number = 100
+  ): Promise<PaginationDto<CourseSectionDto>> {
+    return this.queryBus.execute(new GetCourseSectionsQuery(courseIdOrSlug, limit, offset))
   }
 
   @Post(":courseIdOrSlug/sections")
