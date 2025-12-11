@@ -28,6 +28,7 @@ import { UtilModule } from "./utils/util.module"
 import { FactoryModule } from "./factories/factory.module"
 import { TransactionModule } from "./modules/transaction/transaction.module"
 import { AdminModule } from "./modules/admin/admin.module"
+import { RatingModule } from "./modules/rating/rating.module"
 
 @Global()
 @Module({
@@ -66,7 +67,8 @@ import { AdminModule } from "./modules/admin/admin.module"
     ValidationModule,
     WebhookModule,
     TransactionModule,
-    AdminModule
+    AdminModule,
+    RatingModule,
   ],
   controllers: [AppController],
   providers: [
