@@ -1,18 +1,12 @@
 import { Injectable } from "@nestjs/common"
 import { BaseRepository } from "../../../base/base.repository"
-import { Lecture } from "../entities/lecture.entity"
+import { CourseReview } from "../entities/course-review.entity"
 import { DataSource, EntityManager } from "typeorm"
 import { TransactionContextService } from "../../../database/unit-of-work/transaction-context.service"
 
 @Injectable()
-export class LectureRepository extends BaseRepository<Lecture> {
+export class CourseReviewRepository extends BaseRepository<CourseReview> {
   public constructor(dataSource: DataSource, transactionContextService: TransactionContextService<EntityManager>) {
-    super(dataSource, transactionContextService, Lecture)
-  }
-
-  public findBySectionId(sectionId: string): Promise<Lecture[]> {
-    return this.getRepository().find({
-      where: { section: { id: sectionId } }
-    })
+    super(dataSource, transactionContextService, CourseReview)
   }
 }

@@ -8,7 +8,6 @@ import { IllegalArgumentException } from "../exceptions/illegal-argument.excepti
 import { buffer } from "stream/consumers"
 import { Readable } from "stream"
 import { User } from "../modules/user/entities/user.entity"
-import { Course } from "../modules/course/entities/course.entity"
 import { UserRepository } from "../modules/user/repositories/user.repository"
 import { CourseRepository } from "../modules/course/repositories/course.repository"
 import sharp from "sharp"

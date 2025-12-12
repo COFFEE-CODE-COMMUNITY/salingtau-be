@@ -130,6 +130,7 @@ export class CourseDto {
   @ApiProperty()
   @IsNotEmpty({ message: "Category should not be empty" })
   @ValidateNested()
+  @ValidateOnPost()
   @Type(() => CourseCategoryDto)
   @AutoMap(() => CourseCategoryDto)
   public category!: CourseCategoryDto

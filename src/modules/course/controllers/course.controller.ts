@@ -37,6 +37,7 @@ import { LectureDto } from "../dto/lecture.dto"
 import { CreateLectureCommand } from "../commands/create-lecture.command"
 import { UploadThumbnailCommand } from "../commands/upload-thumbnail.command"
 import { GetCourseSectionsQuery } from "../queries/get-course-sections.query"
+import { GetLecturesQuery } from "../queries/get-lectures.query"
 
 @ApiTags("Courses")
 @Controller("courses")
@@ -270,6 +271,18 @@ export class CourseController {
     @Query("search") search?: string
   ): Promise<PaginationDto<CourseCategoryDto>> {
     return this.queryBus.execute(new GetCourseCategoriesQuery(offset, limit, search))
+  }
+
+  @Get(":courseIdOrSlug/sections/:sectionId/lectures")
+  public async getLectures(
+    @Param("courseIdOrSlug") courseIdOrSlug: string,
+    @Param("sectionId") sectionId: string,
+    @Query("offset", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    offset: number = 0,
+    @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    limit: number = 100
+  ): Promise<PaginationDto<LectureDto>> {
+    return this.queryBus.execute(new GetLecturesQuery(courseIdOrSlug, sectionId, limit, offset))
   }
 
   @Post(":courseIdOrSlug/sections/:sectionId/lectures")

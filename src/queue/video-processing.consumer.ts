@@ -9,7 +9,7 @@ import { promisify } from "util"
 import { tmpdir } from "os"
 import { createReadStream, createWriteStream } from "fs"
 import { readdir, rm, mkdir } from "fs/promises"
-import { LectureVideoPath, LectureVideoTemporaryPath } from "../modules/course/helpers/path.helper"
+import { LectureVideoTemporaryPath } from "../modules/course/helpers/path.helper"
 import { LectureVideoStatus } from "../modules/course/enums/lecture-video-status.enum"
 
 const execAsync = promisify(exec)
