@@ -19,6 +19,7 @@ import { LectureFile } from "../modules/course/entities/lecture-file.entity"
 import { LectureProgress } from "../modules/course/entities/lecture-progress.entity"
 import { LectureVideo } from "../modules/course/entities/lecture-video.entity"
 import { Transaction } from "../modules/transaction/entities/transaction.entity"
+import { Rating } from "../modules/rating/entities/rating"
 
 @Global()
 @Module({
@@ -50,7 +51,8 @@ import { Transaction } from "../modules/transaction/entities/transaction.entity"
             LectureFile,
             LectureProgress,
             LectureVideo,
-            Transaction
+            Transaction,
+            Rating
           ]
         }
       },

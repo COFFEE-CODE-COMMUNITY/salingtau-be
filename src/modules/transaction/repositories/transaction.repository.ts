@@ -3,6 +3,7 @@ import { BaseRepository } from "../../../base/base.repository"
 import { Transaction } from "../entities/transaction.entity"
 import { DataSource, EntityManager } from "typeorm"
 import { TransactionContextService } from "../../../database/unit-of-work/transaction-context.service"
+import { PaymentStatus } from "../enums/payment-status.enum"
 
 @Injectable()
 export class TransactionRepository extends BaseRepository<Transaction> {
@@ -48,6 +49,16 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       },
       order: {
         createdAt: "DESC"
+      }
+    })
+  }
+
+  public async findSuccessPurchase(userId: string, courseId: string) {
+    return this.getRepository().findOne({
+      where: {
+        user: { id: userId },
+        course: { id: courseId },
+        status: PaymentStatus.COMPLETED
       }
     })
   }
