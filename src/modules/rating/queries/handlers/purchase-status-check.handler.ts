@@ -9,6 +9,6 @@ export class PurchaseStatusCheckHandler implements IQueryHandler<PurchaseStatusC
   ) {}
 
   public async execute(command: PurchaseStatusCheckQuery): Promise<boolean> {
-    return this.ratingRepository.purchaseStatus(command.userId, command.courseId)
+    return await this.ratingRepository.purchaseStatus(command.userId, command.courseId)
   }
 }

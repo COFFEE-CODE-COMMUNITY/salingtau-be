@@ -8,6 +8,8 @@ import { UpdateCommentHandler } from "./commands/handlers/update-comment.handler
 import { RatingRepository } from "./repositories/rating.repository"
 import { TransactionModule } from "../transaction/transaction.module"
 import { TransactionRepository } from "../transaction/repositories/transaction.repository"
+import { APP_GUARD } from "@nestjs/core"
+import { BearerTokenGuard } from "../../guards/bearer-token.guard"
 
 @Module({
   imports: [TransactionModule],
@@ -18,6 +20,10 @@ import { TransactionRepository } from "../transaction/repositories/transaction.r
     CreateCommentHandler,
     DeleteCommentHandler,
     UpdateCommentHandler,
+    {
+      provide: APP_GUARD,
+      useClass: BearerTokenGuard,
+    },
 
     RatingRepository,
     TransactionRepository,
