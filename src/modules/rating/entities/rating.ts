@@ -1,31 +1,30 @@
-import { Column, Entity, ManyToOne, JoinColumn, Unique } from "typeorm";
-import { BaseEntity } from "../../../base/base.entity";
-import { User } from "../../user/entities/user.entity";
-import { Course } from "../../course/entities/course.entity";
+import { Column, Entity, ManyToOne, JoinColumn, Unique } from "typeorm"
+import { BaseEntity } from "../../../base/base.entity"
+import { User } from "../../user/entities/user.entity"
+import { Course } from "../../course/entities/course.entity"
 
 @Entity("course_rating")
 @Unique(["userId", "courseId"])
 export class Rating extends BaseEntity {
-
   @Column({ type: "int", nullable: false })
-  rating!: number;
+  rating!: number
 
   @Column({ type: "text", nullable: true })
-  comment!: string | null;
+  comment!: string | null
 
   @Column({ name: "user_id" })
-  userId!: string;
+  userId!: string
 
   @ManyToOne(() => User, { onDelete: "CASCADE" })
   @JoinColumn({ name: "user_id" })
-  user!: User;
+  user!: User
 
   @Column({ name: "course_id" })
-  courseId!: string;
+  courseId!: string
 
-  @ManyToOne(() => Course, (course) => course.reviews, {
-    onDelete: "CASCADE",
+  @ManyToOne(() => Course, course => course.reviews, {
+    onDelete: "CASCADE"
   })
   @JoinColumn({ name: "course_id" })
-  course!: Course;
+  course!: Course
 }

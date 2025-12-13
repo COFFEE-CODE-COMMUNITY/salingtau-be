@@ -19,27 +19,22 @@ export class RatingRepository extends BaseRepository<Rating> {
 
   public async purchaseStatus(userId: string, courseId: string): Promise<boolean> {
     const result = await this.transactionRepository.findSuccessPurchase(userId, courseId)
-    return !!result;
+    return !!result
   }
 
-  public async createComment(
-    userId: string,
-    courseId: string,
-    dto: CreateCommentDto
-  ): Promise<Rating> {
-
+  public async createComment(userId: string, courseId: string, dto: CreateCommentDto): Promise<Rating> {
     const hasPurchased = await this.transactionRepository.findSuccessPurchase(userId, courseId)
 
     if (!hasPurchased) {
-      throw new Error("User belum membeli course ini");
+      throw new Error("User belum membeli course ini")
     }
 
     const existing = await this.getRepository().findOne({
-      where: { userId, courseId },
-    });
+      where: { userId, courseId }
+    })
 
     if (existing) {
-      throw new Error("User sudah pernah memberi rating pada course ini");
+      throw new Error("User sudah pernah memberi rating pada course ini")
     }
 
     const newRating = this.getRepository().create({
@@ -47,65 +42,56 @@ export class RatingRepository extends BaseRepository<Rating> {
       courseId,
       rating: dto.rating,
       comment: dto.comment ?? null
-    });
+    })
 
-    return await this.getRepository().save(newRating);
+    return await this.getRepository().save(newRating)
   }
 
-  public async updateComment(
-    userId: string,
-    courseId: string,
-    dto: UpdateCommentDto
-  ): Promise<Rating> {
-
+  public async updateComment(userId: string, courseId: string, dto: UpdateCommentDto): Promise<Rating> {
     const existing = await this.getRepository().findOne({
-      where: { userId, courseId },
-    });
+      where: { userId, courseId }
+    })
 
     if (!existing) {
-      throw new Error("User belum pernah memberi rating");
+      throw new Error("User belum pernah memberi rating")
     }
 
-    existing.rating = dto.rating ?? existing.rating;
-    existing.comment = dto.comment ?? existing.comment;
+    existing.rating = dto.rating ?? existing.rating
+    existing.comment = dto.comment ?? existing.comment
 
-    return await this.getRepository().save(existing);
+    return await this.getRepository().save(existing)
   }
 
   public async getComments(userId: string, courseId: string) {
-    const repo = this.getRepository();
+    const repo = this.getRepository()
 
     const userReview = await repo.findOne({
-      where: { courseId, userId },
-    });
+      where: { courseId, userId }
+    })
 
     const otherReviews = await repo.find({
       where: {
         courseId,
-        userId: Not(userId),
+        userId: Not(userId)
       },
-      order: { createdAt: "DESC" },
-    });
+      order: { createdAt: "DESC" }
+    })
 
     return {
       userReview,
       otherReviews
-    };
+    }
   }
 
-  public async deleteComment(
-    userId: string,
-    courseId: string
-  ): Promise<void> {
-
+  public async deleteComment(userId: string, courseId: string): Promise<void> {
     const existing = await this.getRepository().findOne({
-      where: { userId, courseId },
-    });
+      where: { userId, courseId }
+    })
 
     if (!existing) {
-      throw new Error("User belum pernah memberi rating");
+      throw new Error("User belum pernah memberi rating")
     }
 
-    await this.getRepository().remove(existing);
+    await this.getRepository().remove(existing)
   }
 }

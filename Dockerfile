@@ -20,6 +20,9 @@ FROM node:lts-alpine AS production
 
 WORKDIR /app
 
+# Install ffmpeg
+RUN apk add --no-cache ffmpeg
+
 # Set environment variable to skip prepare scripts
 ENV NODE_ENV=production
 

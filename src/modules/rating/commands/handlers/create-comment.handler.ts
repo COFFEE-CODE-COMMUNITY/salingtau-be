@@ -4,9 +4,7 @@ import { RatingRepository } from "../../repositories/rating.repository"
 
 @CommandHandler(CreateCommentCommand)
 export class CreateCommentHandler implements ICommandHandler<CreateCommentCommand> {
-  public constructor(
-    private readonly ratingRepository: RatingRepository
-  ) {}
+  public constructor(private readonly ratingRepository: RatingRepository) {}
 
   public async execute(command: CreateCommentCommand): Promise<any> {
     return this.ratingRepository.createComment(command.userId, command.courseId, command.dto)

@@ -68,7 +68,7 @@ import { RatingModule } from "./modules/rating/rating.module"
     WebhookModule,
     TransactionModule,
     AdminModule,
-    RatingModule,
+    RatingModule
   ],
   controllers: [AppController],
   providers: [

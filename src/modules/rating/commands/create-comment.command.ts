@@ -5,7 +5,7 @@ export class CreateCommentCommand extends Command<any> {
   public constructor(
     public readonly userId: string,
     public readonly courseId: string,
-    public readonly dto: CreateCommentDto,
+    public readonly dto: CreateCommentDto
   ) {
     super()
   }

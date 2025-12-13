@@ -5,7 +5,7 @@ export class UpdateCommentCommand extends Command<any> {
   public constructor(
     public readonly userId: string,
     public readonly courseId: string,
-    public readonly dto: UpdateCommentDto,
+    public readonly dto: UpdateCommentDto
   ) {
     super()
   }

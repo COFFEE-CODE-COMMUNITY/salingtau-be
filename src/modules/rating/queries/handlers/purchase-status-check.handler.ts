@@ -4,9 +4,7 @@ import { RatingRepository } from "../../repositories/rating.repository"
 
 @QueryHandler(PurchaseStatusCheckQuery)
 export class PurchaseStatusCheckHandler implements IQueryHandler<PurchaseStatusCheckQuery> {
-  public constructor(
-    private readonly ratingRepository: RatingRepository,
-  ) {}
+  public constructor(private readonly ratingRepository: RatingRepository) {}
 
   public async execute(command: PurchaseStatusCheckQuery): Promise<boolean> {
     return await this.ratingRepository.purchaseStatus(command.userId, command.courseId)

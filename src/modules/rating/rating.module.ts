@@ -22,11 +22,11 @@ import { BearerTokenGuard } from "../../guards/bearer-token.guard"
     UpdateCommentHandler,
     {
       provide: APP_GUARD,
-      useClass: BearerTokenGuard,
+      useClass: BearerTokenGuard
     },
 
     RatingRepository,
-    TransactionRepository,
+    TransactionRepository
   ]
 })
 export class RatingModule {}

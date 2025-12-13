@@ -23,6 +23,7 @@ import { UploadThumbnailHandler } from "./commands/handlers/upload-thumbnail.han
 import { IMAGE_PROCESSING_QUEUE } from "../../queue/image-processing.consumer"
 import { GetCourseSectionsHandler } from "./queries/handlers/get-course-sections.handler"
 import { GetLecturesQueryHandler } from "./queries/handlers/get-lectures.query"
+import { GetInstructorCoursesHandler } from "./queries/handlers/get-instructor-courses.handler"
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { GetLecturesQueryHandler } from "./queries/handlers/get-lectures.query"
     GetCourseHandler,
     GetCoursesHandler,
     GetCourseSectionsHandler,
+    GetInstructorCoursesHandler,
     GetLecturesQueryHandler,
     PutLectureContentHandler,
     UploadThumbnailHandler,

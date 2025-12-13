@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseEnumPipe, ParseIntPipe, Patch, Post, Put, Query, Req } from "@nestjs/common"
+import { Body, Controller, Get, Param, ParseEnumPipe, ParseIntPipe, Post, Put, Query, Req } from "@nestjs/common"
 import { CourseDto } from "../dto/course.dto"
 import { CommandBus, QueryBus } from "@nestjs/cqrs"
 import { CreateCourseCommand } from "../commands/create-course.command"
@@ -38,6 +38,8 @@ import { CreateLectureCommand } from "../commands/create-lecture.command"
 import { UploadThumbnailCommand } from "../commands/upload-thumbnail.command"
 import { GetCourseSectionsQuery } from "../queries/get-course-sections.query"
 import { GetLecturesQuery } from "../queries/get-lectures.query"
+import { GetInstructorCoursesQuery } from "../queries/get-instructor-courses.query"
+import { UserId } from "../../../http/user-id.decorator"
 
 @ApiTags("Courses")
 @Controller("courses")
@@ -159,13 +161,22 @@ export class CourseController {
     return this.commandBus.execute(new CreateCourseCommand(dto))
   }
 
-  @Patch(":courseIdOrSlug")
-  public async updateCourse(
-    @Param("courseIdOrSlug") courseIdOrSlug: string,
-    @Body() dto: CourseDto
-  ): Promise<CourseDto> {
-    // Implementation for updating a course goes here
-    return {} as CourseDto
+  @Get("instructor")
+  @Roles([UserRole.INSTRUCTOR])
+  @Authorized()
+  public async getInstructorCourses(
+    @UserId() instructorId: string,
+    @Query("offset", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    offset: number = 0,
+    @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    limit: number = 100,
+    @Query("sortBy", new ParseEnumPipe(CourseSortBy, { optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    sortBy: CourseSortBy = CourseSortBy.NEWEST,
+    @Query("sortOrder", new ParseEnumPipe(SortOrder, { optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    sortOrder: SortOrder = SortOrder.ASCENDING,
+    @Query("search") search?: string
+  ): Promise<PaginationDto<CourseDto>> {
+    return this.queryBus.execute(new GetInstructorCoursesQuery(instructorId, offset, limit, sortBy, sortOrder, search))
   }
 
   @Put(":courseIdOrSlug/thumbnail")
