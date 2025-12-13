@@ -113,6 +113,24 @@ export class CourseController {
     return this.queryBus.execute(new GetCoursesQuery(offset, limit, sortBy, sortOrder, search))
   }
 
+  @Get("instructor")
+  @Roles([UserRole.INSTRUCTOR])
+  @Authorized()
+  public async getInstructorCourses(
+    @UserId() instructorId: string,
+    @Query("offset", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    offset: number = 0,
+    @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    limit: number = 100,
+    @Query("sortBy", new ParseEnumPipe(CourseSortBy, { optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    sortBy: CourseSortBy = CourseSortBy.NEWEST,
+    @Query("sortOrder", new ParseEnumPipe(SortOrder, { optional: true, exceptionFactory: parsePipeExceptionFactory }))
+    sortOrder: SortOrder = SortOrder.ASCENDING,
+    @Query("search") search?: string
+  ): Promise<PaginationDto<CourseDto>> {
+    return this.queryBus.execute(new GetInstructorCoursesQuery(instructorId, offset, limit, sortBy, sortOrder, search))
+  }
+
   @Get(":courseIdOrSlug")
   @ApiOperation({
     summary: "Get a single course by ID or slug",
@@ -159,24 +177,6 @@ export class CourseController {
   @Authorized()
   public async createCourse(@Body() dto: CourseDto): Promise<CourseDto> {
     return this.commandBus.execute(new CreateCourseCommand(dto))
-  }
-
-  @Get("instructor")
-  @Roles([UserRole.INSTRUCTOR])
-  @Authorized()
-  public async getInstructorCourses(
-    @UserId() instructorId: string,
-    @Query("offset", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
-    offset: number = 0,
-    @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
-    limit: number = 100,
-    @Query("sortBy", new ParseEnumPipe(CourseSortBy, { optional: true, exceptionFactory: parsePipeExceptionFactory }))
-    sortBy: CourseSortBy = CourseSortBy.NEWEST,
-    @Query("sortOrder", new ParseEnumPipe(SortOrder, { optional: true, exceptionFactory: parsePipeExceptionFactory }))
-    sortOrder: SortOrder = SortOrder.ASCENDING,
-    @Query("search") search?: string
-  ): Promise<PaginationDto<CourseDto>> {
-    return this.queryBus.execute(new GetInstructorCoursesQuery(instructorId, offset, limit, sortBy, sortOrder, search))
   }
 
   @Put(":courseIdOrSlug/thumbnail")
