@@ -189,6 +189,7 @@ export class VideoProcessingConsumer extends WorkerHost {
     const lectureVideo = await this.lectureVideoRepository.findByLectureId(videoPath.getLectureId())
 
     if (lectureVideo) {
+      lectureVideo.path = `courses/${videoPath.getCourseId()}/master.m3u8`
       lectureVideo.status = LectureVideoStatus.READY
       lectureVideo.durationMilliseconds = durationInMs
       lectureVideo.resolutions = targetResolutions
