@@ -14,7 +14,7 @@ export class CourseSection extends BaseEntity {
   @AutoMap()
   public displayOrder!: number
 
-  @ManyToOne(() => Course, course => course.sections)
+  @ManyToOne(() => Course, course => course.sections, { onDelete: "CASCADE" })
   public course!: Course
 
   @OneToMany(() => Lecture, lecture => lecture.section, { cascade: true, onDelete: "CASCADE" })
