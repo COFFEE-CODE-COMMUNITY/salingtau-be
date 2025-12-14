@@ -58,4 +58,13 @@ export class CourseRepository extends BaseRepository<Course> {
       }
     })
   }
+
+  public async deleteByInstructor(courseId: string, instructorId: string): Promise<void> {
+    await this.getRepository().delete({
+      id: courseId,
+      instructor: {
+        id: instructorId
+      }
+    })
+  }
 }

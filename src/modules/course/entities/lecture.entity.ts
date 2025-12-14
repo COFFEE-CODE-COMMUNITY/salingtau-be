@@ -29,16 +29,16 @@ export class Lecture extends BaseEntity {
   @AutoMap()
   public displayOrder!: number
 
-  @OneToOne(() => LectureArticle, article => article.lecture)
+  @OneToOne(() => LectureArticle, article => article.lecture, { cascade: true, onDelete: "CASCADE" })
   public article?: LectureArticle
 
-  @OneToOne(() => LectureExternal, external => external.lecture)
+  @OneToOne(() => LectureExternal, external => external.lecture, { cascade: true, onDelete: "CASCADE" })
   public external?: LectureExternal
 
-  @OneToOne(() => LectureFile, file => file.lecture)
+  @OneToOne(() => LectureFile, file => file.lecture, { cascade: true, onDelete: "CASCADE" })
   public file?: LectureFile
 
-  @OneToOne(() => LectureVideo, video => video.lecture)
+  @OneToOne(() => LectureVideo, video => video.lecture, { cascade: true, onDelete: "CASCADE" })
   public video?: LectureVideo
 
   @ManyToOne(() => CourseSection, section => section.id, { onDelete: "CASCADE" })

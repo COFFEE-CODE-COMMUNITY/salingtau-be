@@ -1,4 +1,18 @@
-import { Body, Controller, Get, Param, ParseEnumPipe, ParseIntPipe, Post, Put, Query, Req } from "@nestjs/common"
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseEnumPipe,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  Req
+} from "@nestjs/common"
 import { CourseDto } from "../dto/course.dto"
 import { CommandBus, QueryBus } from "@nestjs/cqrs"
 import { CreateCourseCommand } from "../commands/create-course.command"
@@ -40,6 +54,7 @@ import { GetCourseSectionsQuery } from "../queries/get-course-sections.query"
 import { GetLecturesQuery } from "../queries/get-lectures.query"
 import { GetInstructorCoursesQuery } from "../queries/get-instructor-courses.query"
 import { UserId } from "../../../http/user-id.decorator"
+import { DeleteCourseByInstructorCommand } from "../commands/delete-course-by-instructor.command"
 
 @ApiTags("Courses")
 @Controller("courses")
@@ -153,6 +168,17 @@ export class CourseController {
   })
   public async getCourse(@Param("courseIdOrSlug") courseIdOrSlug: string): Promise<CourseDto> {
     return this.queryBus.execute(new GetCourseQuery(courseIdOrSlug))
+  }
+
+  @Delete(":courseIdOrSlug/instructor")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Roles([UserRole.INSTRUCTOR])
+  @Authorized()
+  public async deleteCourseByInstructor(
+    @Param("courseIdOrSlug") courseIdOrSlug: string,
+    @UserId() instructorId: string
+  ): Promise<void> {
+    this.commandBus.execute(new DeleteCourseByInstructorCommand(courseIdOrSlug, instructorId))
   }
 
   @Post()

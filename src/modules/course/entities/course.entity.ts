@@ -52,14 +52,14 @@ export class Course extends BaseEntity {
   @AutoMap()
   public totalReviews!: number
 
-  @OneToMany(() => CourseSection, section => section.course)
+  @OneToMany(() => CourseSection, section => section.course, { cascade: true, onDelete: "CASCADE" })
   public sections!: CourseSection[]
 
   @ManyToOne(() => CourseCategory, category => category.courses)
   @AutoMap(() => CourseCategory)
   public category!: CourseCategory
 
-  @OneToMany(() => CourseReview, courseReview => courseReview.course)
+  @OneToMany(() => CourseReview, courseReview => courseReview.course, { cascade: true, onDelete: "CASCADE" })
   public reviews!: CourseReview[]
 
   @ManyToOne(() => User, user => user.courses)
