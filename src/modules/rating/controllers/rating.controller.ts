@@ -11,6 +11,7 @@ import { GetCommentQuery } from "../queries/get-comment.query"
 import { DeleteCommentCommand } from "../commands/delete-comment.command"
 import { Authorized, BearerTokenGuard } from "../../../guards/bearer-token.guard"
 
+
 @ApiTags("Rating")
 @Controller("rating")
 export class RatingController {
@@ -21,9 +22,10 @@ export class RatingController {
 
   @Get(":courseId/purchase-status")
   @Authorized()
-  public async getByStatus(@UserId() userId: string, @Param("courseId") courseId: string): Promise<boolean> {
-    console.log("get", courseId)
-    console.log(userId)
+  public async getByStatus(
+    @UserId() userId: string,
+    @Param("courseId") courseId: string,
+  ): Promise<boolean> {
     return await this.queryBus.execute(new PurchaseStatusCheckQuery(userId, courseId))
   }
 
@@ -32,11 +34,8 @@ export class RatingController {
   public async createComment(
     @UserId() userId: string,
     @Param("courseId") courseId: string,
-    @Body() body: CreateCommentDto
+    @Body() body: CreateCommentDto,
   ): Promise<any> {
-    console.log("post", body)
-    console.log(courseId)
-    console.log(userId)
     return await this.commandBus.execute(new CreateCommentCommand(userId, courseId, body))
   }
 
@@ -45,20 +44,26 @@ export class RatingController {
   public async updateComment(
     @UserId() userId: string,
     @Param("courseId") courseId: string,
-    @Body() body: UpdateCommentDto
+    @Body() body: UpdateCommentDto,
   ): Promise<any> {
     return await this.commandBus.execute(new UpdateCommentCommand(userId, courseId, body))
   }
 
   @Get(":courseId")
   @Authorized()
-  public async getComments(@UserId() userId: string, @Param("courseId") courseId: string): Promise<any> {
+  public async getComments(
+    @UserId() userId: string,
+    @Param("courseId") courseId: string,
+  ): Promise<any> {
     return await this.queryBus.execute(new GetCommentQuery(userId, courseId))
   }
 
   @Delete(":courseId")
   @Authorized()
-  public async deleteComment(@UserId() userId: string, @Param("courseId") courseId: string): Promise<any> {
+  public async deleteComment(
+    @UserId() userId: string,
+    @Param("courseId") courseId: string,
+  ): Promise<any> {
     return await this.commandBus.execute(new DeleteCommentCommand(userId, courseId))
   }
 }
