@@ -24,6 +24,7 @@ import { IMAGE_PROCESSING_QUEUE } from "../../queue/image-processing.consumer"
 import { GetCourseSectionsHandler } from "./queries/handlers/get-course-sections.handler"
 import { GetLecturesQueryHandler } from "./queries/handlers/get-lectures.query"
 import { GetInstructorCoursesHandler } from "./queries/handlers/get-instructor-courses.handler"
+import { DeleteCourseByInstructorHandler } from "./commands/handlers/delete-course-by-instructor.handler"
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { GetInstructorCoursesHandler } from "./queries/handlers/get-instructor-c
     GetLecturesQueryHandler,
     PutLectureContentHandler,
     UploadThumbnailHandler,
+    DeleteCourseByInstructorHandler,
 
     // Mappers
     CourseMapper,
