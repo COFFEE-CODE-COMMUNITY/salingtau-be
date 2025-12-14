@@ -5,6 +5,7 @@ import { LectureDto } from "../../dto/lecture.dto"
 import { PaginationFactory } from "../../../../factories/pagination.factory"
 import { Pagination } from "../../../../utils/pagination.util"
 import { Lecture } from "../../entities/lecture.entity"
+import { isUUID } from "class-validator"
 
 @QueryHandler(GetLecturesQuery)
 export class GetLecturesQueryHandler implements IQueryHandler<GetLecturesQuery> {
@@ -15,19 +16,26 @@ export class GetLecturesQueryHandler implements IQueryHandler<GetLecturesQuery> 
   }
 
   public async execute(query: GetLecturesQuery): Promise<PaginationDto<LectureDto>> {
-    const { limit, offset } = query
+    const { limit, offset, courseId: courseIdOrSlug, sectionId } = query
+
+    const courseWhere = isUUID(courseIdOrSlug) ? { id: courseIdOrSlug } : { slug: courseIdOrSlug }
 
     return this.pagination.paginate(offset, limit, {
       where: {
         section: {
-          id: query.sectionId,
-          course: {
-            id: query.courseId
-          }
+          id: sectionId,
+          course: courseWhere
         }
       },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        type: true,
+        displayOrder: true
+      },
       order: {
-        createdAt: "ASC"
+        displayOrder: "ASC"
       }
     })
   }

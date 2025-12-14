@@ -319,7 +319,7 @@ export class CourseController {
     @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
     limit: number = 100
   ): Promise<PaginationDto<LectureDto>> {
-    return this.queryBus.execute(new GetLecturesQuery(courseIdOrSlug, sectionId, limit, offset))
+    return this.queryBus.execute(new GetLecturesQuery(courseIdOrSlug, sectionId, offset, limit))
   }
 
   @Post(":courseIdOrSlug/sections/:sectionId/lectures")
