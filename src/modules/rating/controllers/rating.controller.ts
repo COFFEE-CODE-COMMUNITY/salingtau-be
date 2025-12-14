@@ -26,8 +26,6 @@ export class RatingController {
     @UserId() userId: string,
     @Param("courseId") courseId: string,
   ): Promise<boolean> {
-    console.log("get", courseId)
-    console.log(userId)
     return await this.queryBus.execute(new PurchaseStatusCheckQuery(userId, courseId))
   }
 
@@ -38,9 +36,6 @@ export class RatingController {
     @Param("courseId") courseId: string,
     @Body() body: CreateCommentDto,
   ): Promise<any> {
-    console.log("post", body)
-    console.log(courseId)
-    console.log(userId)
     return await this.commandBus.execute(new CreateCommentCommand(userId, courseId, body))
   }
 
