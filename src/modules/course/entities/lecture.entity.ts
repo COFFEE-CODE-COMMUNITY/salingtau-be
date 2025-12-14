@@ -39,6 +39,7 @@ export class Lecture extends BaseEntity {
   public file?: LectureFile
 
   @OneToOne(() => LectureVideo, video => video.lecture, { cascade: true, onDelete: "CASCADE" })
+  @AutoMap(() => LectureVideo)
   public video?: LectureVideo
 
   @ManyToOne(() => CourseSection, section => section.id, { onDelete: "CASCADE" })

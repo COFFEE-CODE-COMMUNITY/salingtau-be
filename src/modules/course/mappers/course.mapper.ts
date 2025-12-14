@@ -10,6 +10,8 @@ import { CourseSectionDto } from "../dto/course-section.dto"
 import { CourseSection } from "../entities/course-section.entity"
 import { LectureDto } from "../dto/lecture.dto"
 import { Lecture } from "../entities/lecture.entity"
+import { LectureVideo } from "../entities/lecture-video.entity"
+import { LectureVideoDto } from "../dto/lecture-video.dto"
 
 @Injectable()
 export class CourseMapper extends AutomapperProfile {
@@ -29,6 +31,7 @@ export class CourseMapper extends AutomapperProfile {
 
       createMap(mapper, LectureDto, Lecture)
       createMap(mapper, Lecture, LectureDto)
+      createMap(mapper, LectureVideo, LectureVideoDto)
     }
   }
 }

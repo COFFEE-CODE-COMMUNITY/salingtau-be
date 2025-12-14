@@ -32,7 +32,18 @@ export class GetLecturesQueryHandler implements IQueryHandler<GetLecturesQuery> 
         title: true,
         description: true,
         type: true,
-        displayOrder: true
+        displayOrder: true,
+        video: {
+          durationMilliseconds: true,
+          size: true,
+          path: true,
+          mimetype: true,
+          resolutions: true,
+          status: true
+        }
+      },
+      relations: {
+        video: true
       },
       order: {
         displayOrder: "ASC"

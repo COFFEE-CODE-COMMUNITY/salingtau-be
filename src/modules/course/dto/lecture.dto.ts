@@ -3,6 +3,7 @@ import { CourseLectureType } from "../enums/course-lecture-type.enum"
 import { IsEnum, IsNotEmpty, MaxLength, Min } from "class-validator"
 import { ValidateOnPost } from "../../../validators/validate-on-post.decorator"
 import { ReadOnly } from "../../../mappers/readonly.decorator"
+import { LectureVideoDto } from "./lecture-video.dto"
 
 export class LectureDto {
   @ReadOnly()
@@ -32,4 +33,7 @@ export class LectureDto {
   @ValidateOnPost()
   @AutoMap()
   public displayOrder!: number
+
+  @AutoMap(() => LectureVideoDto)
+  public video?: LectureVideoDto
 }
