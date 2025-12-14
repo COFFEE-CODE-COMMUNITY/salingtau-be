@@ -11,6 +11,16 @@ export class DeleteCourseByInstructorHandler implements ICommandHandler<DeleteCo
   ) {}
 
   public async execute(command: DeleteCourseByInstructorCommand): Promise<void> {
+    const course = await this.courseRepository.findByIdOrSlug(command.courseIdOrSlug)
+
+    if (!course) {
+      return
+    }
+
+    if (course.thumbnail) {
+      await this.fileStorage.deleteFile(course.thumbnail.path)
+    }
+
     await this.courseRepository.deleteByInstructor(command.courseIdOrSlug, command.instructorId)
   }
 }
