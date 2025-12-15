@@ -65,7 +65,7 @@ export class CreateTokenHandler implements ICommandHandler<CreateTokenCommand> {
           gross_amount: course.price
         },
         callbacks: {
-          finish: "http://localhost:5173/dashboard/student"
+          finish: this.config.getOrThrow("client.web.finishTransaction")
         }
       }
 

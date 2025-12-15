@@ -8,7 +8,8 @@
     "web": {
       "oauth2Redirect": "http://localhost:5173/login",
       "changePassword": "http://localhost:5173/change-password",
-      "url": "http://localhost:5173"
+      "url": "http://localhost:5173",
+      "finishTransaction": "https://salingtau.cthree.it.com/dashboard/student"
     }
   },
   "email": {

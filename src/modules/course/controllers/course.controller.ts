@@ -222,7 +222,9 @@ export class CourseController {
     @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
     limit: number = 100
   ): Promise<PaginationDto<CourseSectionDto>> {
-    return this.queryBus.execute(new GetCourseSectionsQuery(courseIdOrSlug, limit, offset))
+    const result = await this.queryBus.execute(new GetCourseSectionsQuery(courseIdOrSlug, limit, offset))
+    console.log(result)
+    return result
   }
 
   @Post(":courseIdOrSlug/sections")
@@ -319,7 +321,9 @@ export class CourseController {
     @Query("limit", new ParseIntPipe({ optional: true, exceptionFactory: parsePipeExceptionFactory }))
     limit: number = 100
   ): Promise<PaginationDto<LectureDto>> {
-    return this.queryBus.execute(new GetLecturesQuery(courseIdOrSlug, sectionId, offset, limit))
+    const result = await this.queryBus.execute(new GetLecturesQuery(courseIdOrSlug, sectionId, offset, limit))
+    console.log(result)
+    return result
   }
 
   @Post(":courseIdOrSlug/sections/:sectionId/lectures")
