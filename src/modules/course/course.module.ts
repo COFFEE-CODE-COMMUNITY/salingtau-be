@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common"
+import { forwardRef, Module } from "@nestjs/common"
 import { CourseController } from "./controllers/course.controller"
 import { CreateCourseHandler } from "./commands/handlers/create-course.handler"
 import { CourseRepository } from "./repositories/course.repository"
@@ -25,6 +25,8 @@ import { GetCourseSectionsHandler } from "./queries/handlers/get-course-sections
 import { GetLecturesQueryHandler } from "./queries/handlers/get-lectures.handler"
 import { GetInstructorCoursesHandler } from "./queries/handlers/get-instructor-courses.handler"
 import { DeleteCourseByInstructorHandler } from "./commands/handlers/delete-course-by-instructor.handler"
+import { RatingModule } from "../rating/rating.module"
+import { TransactionModule } from "../transaction/transaction.module"
 
 @Module({
   imports: [
@@ -34,7 +36,7 @@ import { DeleteCourseByInstructorHandler } from "./commands/handlers/delete-cour
     BullModule.registerQueue({
       name: VIDEO_PROCESSING_QUEUE
     }),
-    UserModule
+    UserModule,
   ],
   controllers: [CourseController],
   providers: [

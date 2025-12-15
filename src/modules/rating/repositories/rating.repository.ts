@@ -194,4 +194,29 @@ export class RatingRepository extends BaseRepository<Rating> {
       percentage
     };
   }
+
+  public async getCourseRatingSummary(courseId: string): Promise<{
+    totalRater: number
+    averageRating: number
+  }> {
+    const repo = this.getRepository()
+
+    const raw = await repo
+      .createQueryBuilder("rating")
+      .select("COUNT(rating.id)", "total")
+      .addSelect("AVG(rating.rating)", "average")
+      .where("rating.courseId = :courseId", { courseId })
+      .getRawOne()
+
+    const totalRater = Number(raw?.total ?? 0)
+    const averageRating =
+      totalRater === 0
+        ? 0
+        : Number(Number(raw.average).toFixed(1))
+
+    return {
+      totalRater,
+      averageRating
+    }
+  }
 }

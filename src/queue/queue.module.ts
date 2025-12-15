@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common"
+import { forwardRef, Module } from "@nestjs/common"
 import { ImageProcessingConsumer } from "./image-processing.consumer"
 import { UserModule } from "../modules/user/user.module"
 import { EmailConsumer } from "./email.consumer"

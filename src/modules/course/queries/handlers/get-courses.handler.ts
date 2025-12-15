@@ -8,12 +8,16 @@ import { Pagination } from "../../../../utils/pagination.util"
 import { CourseSortBy } from "../../enums/course-sort-by.enum"
 import { SortOrder } from "../../../../enums/sort-order"
 import { FindOptionsOrder, FindOptionsWhere, ILike } from "typeorm"
+import { CourseRepository } from "../../repositories/course.repository"
 
 @QueryHandler(GetCoursesQuery)
 export class GetCoursesHandler implements IQueryHandler<GetCoursesQuery> {
   private readonly pagination: Pagination<Course, CourseDto>
 
-  public constructor(paginationFactory: PaginationFactory) {
+  public constructor(
+    paginationFactory: PaginationFactory,
+    private readonly courseRepository: CourseRepository,
+  ) {
     this.pagination = paginationFactory.create(Course, CourseDto)
   }
 
@@ -45,7 +49,7 @@ export class GetCoursesHandler implements IQueryHandler<GetCoursesQuery> {
         break
     }
 
-    return this.pagination.paginate(offset, limit, {
+    const result = await this.pagination.paginate(offset, limit, {
       where,
       order,
       relations: { instructor: true, category: true },
@@ -64,5 +68,27 @@ export class GetCoursesHandler implements IQueryHandler<GetCoursesQuery> {
         updatedAt: true
       }
     })
+
+    const courseIds = result.data.map(course => course.id)
+    const rawRatings = await this.courseRepository.getRatingSummaryByCourseIds(courseIds)
+
+    const ratingMap = new Map(
+      rawRatings.map(r => [
+        r.courseId,
+        {
+          totalReviews: Number(r.totalReviews),
+          averageRating: Number(Number(r.averageRating).toFixed(1))
+        }
+      ])
+    )
+
+    for (const course of result.data) {
+      const rating = ratingMap.get(course.id)
+
+      course.averageRating = rating?.averageRating ?? 0
+      course.totalReviews = rating?.totalReviews ?? 0
+    }
+
+    return result
   }
 }

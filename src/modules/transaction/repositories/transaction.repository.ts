@@ -62,4 +62,19 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       }
     })
   }
+
+  public async getRatingSummaryByCourseIds(courseIds: string[]) {
+    if (courseIds.length === 0) return []
+
+    return this.getRepository()
+      .createQueryBuilder("transaction")
+      .innerJoin("transaction.course", "course")
+      .leftJoin("course.ratings", "rating")
+      .select("course.id", "courseId")
+      .addSelect("COUNT(rating.id)", "totalReviews")
+      .addSelect("COALESCE(AVG(rating.rating), 0)", "averageRating")
+      .where("course.id IN (:...courseIds)", { courseIds })
+      .groupBy("course.id")
+      .getRawMany()
+  }
 }

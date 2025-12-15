@@ -27,6 +27,7 @@ import { BearerTokenGuard } from "../../guards/bearer-token.guard"
 
     RatingRepository,
     TransactionRepository
-  ]
+  ],
+  exports: [RatingModule]
 })
 export class RatingModule {}

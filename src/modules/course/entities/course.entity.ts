@@ -9,6 +9,7 @@ import { CourseReview } from "./course-review.entity"
 import { ImageMetadata } from "../../../entities/image-metadata.entity"
 import { User } from "../../user/entities/user.entity"
 import { Transaction } from "../../transaction/entities/transaction.entity"
+import { Rating } from "../../rating/entities/rating"
 
 @Entity({ name: "courses" })
 export class Course extends BaseEntity {
@@ -68,4 +69,7 @@ export class Course extends BaseEntity {
 
   @OneToMany(() => Transaction, transaction => transaction.course)
   public transactions!: Transaction[]
+
+  @OneToMany(() => Rating, rating => rating.course)
+  public ratings!: Rating[]
 }
